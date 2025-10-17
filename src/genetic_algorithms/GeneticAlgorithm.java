@@ -60,7 +60,7 @@ public class GeneticAlgorithm {
             }
 
             population = newPopulation;
-            Collections.sort(population);
+            population.sort(Collections.reverseOrder());
             System.out.println("Generation " + g + " best fitness: " + population.get(0).getFitness());
         }
     }

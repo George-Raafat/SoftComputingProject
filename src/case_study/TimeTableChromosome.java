@@ -6,7 +6,7 @@ import java.util.List;
 
 public class TimeTableChromosome implements Chromosome {
     private Integer fitness;
-    private List<Integer> slots;
+    private List<Integer> genes;
     // slotLookUpTable??
 
     TimeTableChromosome() {
@@ -22,7 +22,7 @@ public class TimeTableChromosome implements Chromosome {
     public Chromosome copy() {
         TimeTableChromosome chromosome = new TimeTableChromosome();
         chromosome.fitness = this.fitness;
-        chromosome.slots = List.copyOf(this.slots);
+        chromosome.genes = List.copyOf(this.genes);
         return chromosome;
     }
 
@@ -31,8 +31,7 @@ public class TimeTableChromosome implements Chromosome {
         return fitness;
     }
 
-    @Override
-    public void evaluateFitness() {
+    private void evaluateFitness() {
 
     }
 

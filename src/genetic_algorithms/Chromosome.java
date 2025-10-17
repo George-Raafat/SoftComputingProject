@@ -9,7 +9,5 @@ public interface Chromosome extends Comparable<Chromosome> {
 
     Integer getFitness();
 
-    void evaluateFitness();
-
     List<Chromosome> crossoverWith(Chromosome partner);
 }
