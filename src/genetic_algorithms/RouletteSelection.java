@@ -22,6 +22,6 @@ public class RouletteSelection implements SelectionStrategy {
                 return c;
             }
         }
-        return null;
+        return population.get(population.size() - 1);
     }
 }

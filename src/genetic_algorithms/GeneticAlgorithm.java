@@ -14,6 +14,12 @@ public class GeneticAlgorithm {
     private double crossoverRate = 0.8;
     private double mutationRate = 0.02;
     private Supplier<Chromosome> chromosomeFactory;
+    private SelectionStrategy selectionStrategy;
+
+    public GeneticAlgorithm(Supplier<Chromosome> chromosomeFactory, SelectionStrategy selectionStrategy) {
+        this.chromosomeFactory = chromosomeFactory;
+        this.selectionStrategy = selectionStrategy;
+    }
 
     public void setPopulationSize(int size) {
         this.populationSize = size;
@@ -35,6 +41,10 @@ public class GeneticAlgorithm {
         this.chromosomeFactory = factory;
     }
 
+    public void setSelectionStrategy(SelectionStrategy strategy) {
+        this.selectionStrategy = strategy;
+    }
+
     public void run() {
         initializePopulation();
 
@@ -42,8 +52,8 @@ public class GeneticAlgorithm {
             List<Chromosome> newPopulation = new ArrayList<>();
 
             while (newPopulation.size() < populationSize) {
-                Chromosome parent1 = roulette();
-                Chromosome parent2 = roulette();
+                Chromosome parent1 = selectionStrategy.select(population);
+                Chromosome parent2 = selectionStrategy.select(population);
 
                 List<Chromosome> children;
                 if (random.nextDouble() < crossoverRate) {
@@ -74,18 +84,5 @@ public class GeneticAlgorithm {
 
     public Chromosome getBestSolution() {
         return population.get(0);
-    }
-
-    private Chromosome roulette() {
-        double totalFitness = 0;
-        for (Chromosome c : population) totalFitness += c.getFitness();
-
-        double randomValue = random.nextDouble() * totalFitness;
-        double sum = 0;
-        for (Chromosome c : population) {
-            sum += c.getFitness();
-            if (sum >= randomValue) return c;
-        }
-        return population.get(population.size() - 1);
     }
 }
