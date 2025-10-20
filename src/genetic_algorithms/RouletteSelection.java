@@ -8,7 +8,7 @@ public class RouletteSelection implements SelectionStrategy {
     @Override
     public Chromosome select(List<Chromosome> population) {
         double totalFitness = 0;
-        for (Chromosome c: population) {
+        for (Chromosome c : population) {
             totalFitness += c.getFitness();
         }
 
@@ -16,7 +16,7 @@ public class RouletteSelection implements SelectionStrategy {
         double randomValue = random.nextDouble() * totalFitness;
 
         double sum = 0;
-        for (Chromosome c: population) {
+        for (Chromosome c : population) {
             sum += c.getFitness();
             if (sum >= randomValue) {
                 return c;

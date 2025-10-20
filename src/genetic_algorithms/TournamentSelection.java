@@ -5,6 +5,7 @@ import java.util.Random;
 
 public class TournamentSelection implements SelectionStrategy {
     private final int poolSize;
+
     public TournamentSelection(int poolSize) {
         this.poolSize = poolSize;
     }

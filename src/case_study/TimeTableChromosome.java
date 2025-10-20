@@ -2,12 +2,16 @@ package case_study;
 
 import genetic_algorithms.Chromosome;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class TimeTableChromosome implements Chromosome {
+    public static List<LectureInfo> lecturesInfo;
+    public static CrossoverStrategy crossoverStrategy;
+    public static int[][] availabilityTable;
     private Integer fitness;
     private List<Integer> genes;
-    // slotLookUpTable??
 
     TimeTableChromosome() {
 
@@ -31,58 +35,56 @@ public class TimeTableChromosome implements Chromosome {
         return fitness;
     }
 
-    private void evaluateFitness() {
+    public void evaluateFitness() {
 
     }
+
     @Override
-    public List<Chromosome> crossoverWith1(Chromosome partner) {
-        TimeTableChromosome p = (TimeTableChromosome) partner;
-        int n = genes.size();
-
-        Set<Integer> used = new HashSet<>();
-
-        int len = 1 + (int) (Math.random() * (n - 1));
-        int index = (int) (Math.random() * (n - len + 1));
-
-        List<Integer> childGenes = new ArrayList<>(Collections.nCopies(n, -1));
-
-        for (int i = index; i < index + len; ++i) {
-            int g = p.genes.get(i);
-            childGenes.set(i, g);
-            used.add(g);
-        }
-
-        for (int i = 0; i < n; ++i) {
-            if (i >= index && i < index + len) continue;
-
-            int g = genes.get(i);
-            if (!used.contains(g)) {
-                childGenes.set(i, g);
-                used.add(g);
-            } else {
-                int alt = p.genes.get(i);
-                assert (!used.contains(alt));
-                childGenes.set(i, alt);
-                used.add(alt);
-            }
-        }
-
-        TimeTableChromosome child = new TimeTableChromosome();
-        child.genes = childGenes;
-        child.evaluateFitness();
-
-        return List.of(child);
-    }
-    @Override
-    public List<Chromosome> crossoverWith2(Chromosome partner) {
-        return List.of();
-    } @Override
-    public List<Chromosome> crossoverWith3(Chromosome partner) {
-        return List.of();
+    public List<Chromosome> crossoverWith(Chromosome partner) {
+        return crossoverStrategy.crossover(this, (TimeTableChromosome) partner);
     }
 
     @Override
     public int compareTo(Chromosome c) {
         return fitness - c.getFitness();
+    }
+
+    public List<Integer> getGenes() {
+        return genes;
+    }
+
+    public void setGenes(List<Integer> genes) {
+        this.genes = genes;
+    }
+
+    public void printTimeTable() {
+        int longestCourseName = 0;
+        List<LectureInfo> lectures = new ArrayList<>();
+        for (LectureInfo lecture : lecturesInfo) {
+            longestCourseName = Math.max(longestCourseName, lecture.course().length());
+            for (int i = 0; i < lecture.lecturesPerWeek(); ++i) {
+                lectures.add(lecture);
+            }
+        }
+        int[] slotToLecture = new int[36];
+        Arrays.fill(slotToLecture, -1);
+        for (int i = 0; i < genes.size(); ++i) {
+            slotToLecture[genes.get(i)] = i;
+        }
+        String[] days = {"Sat", "Sun", "Mon", "Tue", "Wed", "Thu"};
+        for (int day = 0; day < 6; ++day) {
+            System.out.print(days[day] + ": |");
+            for (int slot = 0; slot < 6; ++slot) {
+                int globalSlot = day * 6 + slot;
+                int lectureIdx = slotToLecture[globalSlot];
+                if (lectureIdx == -1) {
+                    System.out.print(" ".repeat(longestCourseName + 4) + " |");
+                    continue;
+                }
+                LectureInfo lecture = lectures.get(lectureIdx);
+                System.out.print(" " + (slot + 1) + ". " + lecture.course() + " ".repeat(longestCourseName - lecture.course().length()) + " |");
+            }
+            System.out.println();
+        }
     }
 }
