@@ -9,5 +9,7 @@ public interface Chromosome extends Comparable<Chromosome> {
 
     Integer getFitness();
 
-    List<Chromosome> crossoverWith(Chromosome partner);
+    List<Chromosome> crossoverWith1(Chromosome partner);
+    List<Chromosome> crossoverWith2(Chromosome partner);
+    List<Chromosome> crossoverWith3(Chromosome partner);
 }
