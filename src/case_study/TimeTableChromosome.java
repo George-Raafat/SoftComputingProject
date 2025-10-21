@@ -14,9 +14,7 @@ public class TimeTableChromosome implements Chromosome {
     private Integer fitness;
     private List<Integer> genes;
 
-    TimeTableChromosome() {
-
-    }
+    TimeTableChromosome() {}
 
     @Override
     public void mutate(double mutationRate) {
@@ -37,7 +35,7 @@ public class TimeTableChromosome implements Chromosome {
                 }
             }
         }
-
+        evaluateFitness();
     }
 
     @Override
@@ -54,7 +52,29 @@ public class TimeTableChromosome implements Chromosome {
     }
 
     public void evaluateFitness() {
-
+        boolean[] usedSlots = new boolean[36];
+        for (int gene : genes) {
+            usedSlots[gene] = true;
+        }
+        int cost = 0;
+        int numDays = 0;
+        for (int i = 0; i < 6; i++){
+            int j = i * 6;
+            int k = j + 5;
+            while(j <= k && !usedSlots[j]){
+                ++j;
+            }
+            while(k >= j && !usedSlots[k]){
+                --k;
+            }
+            int interval = k - j + 1;
+            if (interval > 0){
+                ++numDays;
+            }
+            cost += interval * interval;
+        }
+        cost += numDays * 20;
+        fitness = 340 - cost;
     }
 
     @Override
