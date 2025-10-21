@@ -4,12 +4,13 @@ import genetic_algorithms.Chromosome;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TimeTableChromosome implements Chromosome {
     public static List<LectureInfo> lecturesInfo;
     public static CrossoverStrategy crossoverStrategy;
-    public static int[][] availabilityTable;
+    public static List<List<Integer>> availabilityTable;
     private Integer fitness;
     private List<Integer> genes;
 
@@ -19,6 +20,23 @@ public class TimeTableChromosome implements Chromosome {
 
     @Override
     public void mutate(double mutationRate) {
+        boolean[] usedSlots = new boolean[36];
+        for (int gene : genes) {
+            usedSlots[gene] = true;
+        }
+        for (int i = 0; i < genes.size(); ++i) {
+            if (Math.random() < mutationRate) {
+                Collections.shuffle(availabilityTable.get(i));
+                for (int slot : availabilityTable.get(i)) {
+                    if (!usedSlots[slot]) {
+                        usedSlots[genes.get(i)] = false;
+                        genes.set(i, slot);
+                        usedSlots[slot] = true;
+                        break;
+                    }
+                }
+            }
+        }
 
     }
 

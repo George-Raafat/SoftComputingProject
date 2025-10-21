@@ -5,25 +5,22 @@ import java.util.*;
 public class TimeTableChromosomeFactory {
     private final int slotsPerWeek = 36;
 
-    private final int[][] availabilityTable;
+    private final List<List<Integer>> availabilityTable;
     private final int[] slotToProfessor = new int[slotsPerWeek];
-    private final Random random = new Random();
+
     // Track visited slots during DFS
     private boolean[] visited;
 
     public TimeTableChromosomeFactory(List<LectureInfo> lectures, CrossoverStrategy crossoverStrategy) {
-        int numLecturs = 0;
+        int numLectures = 0;
         for (LectureInfo lecture : lectures) {
-            numLecturs += lecture.lecturesPerWeek();
+            numLectures += lecture.lecturesPerWeek();
         }
 
-        availabilityTable = new int[numLecturs][];
-        int currentIndex = 0;
+        availabilityTable = new ArrayList<>(numLectures);
         for (LectureInfo lecture : lectures) {
-            int[] availableSlots = lecture.availableSlots().stream().mapToInt(Integer::intValue).toArray();
             for (int j = 0; j < lecture.lecturesPerWeek(); ++j) {
-                availabilityTable[currentIndex] = availableSlots;
-                ++currentIndex;
+                availabilityTable.add(lecture.availableSlots());
             }
         }
         TimeTableChromosome.lecturesInfo = lectures;
@@ -32,9 +29,9 @@ public class TimeTableChromosomeFactory {
     }
 
     private boolean dfs(int prof) {
-        shuffleArray(availabilityTable[prof]);
-        for (int i = 0; i < availabilityTable[prof].length; ++i) {
-            int slot = availabilityTable[prof][i];
+        Collections.shuffle(availabilityTable.get(prof));
+        for (int i = 0; i < availabilityTable.get(prof).size(); ++i) {
+            int slot = availabilityTable.get(prof).get(i);
             if (visited[slot]) continue;
             visited[slot] = true;
 
@@ -47,19 +44,10 @@ public class TimeTableChromosomeFactory {
         return false;
     }
 
-    private void shuffleArray(int[] arr) {
-        for (int i = arr.length - 1; i > 0; i--) {
-            int j = random.nextInt(i + 1);
-            int tmp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = tmp;
-        }
-    }
-
     private List<Integer> assignSlots() {
         Arrays.fill(slotToProfessor, -1);
 
-        for (int i = 0; i < availabilityTable.length; ++i) {
+        for (int i = 0; i < availabilityTable.size(); ++i) {
             visited = new boolean[slotsPerWeek];
             if (!dfs(i)) {
                 return null; // No feasible assignment
@@ -67,7 +55,7 @@ public class TimeTableChromosomeFactory {
         }
 
         // Convert slotToProfessor to professor -> slot mapping
-        List<Integer> result = new ArrayList<>(Collections.nCopies(availabilityTable.length, -1));
+        List<Integer> result = new ArrayList<>(Collections.nCopies(availabilityTable.size(), -1));
         for (int i = 0; i < slotToProfessor.length; ++i) {
             if (slotToProfessor[i] != -1) {
                 result.set(slotToProfessor[i], i);
