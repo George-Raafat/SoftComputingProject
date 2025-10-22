@@ -1,4 +1,6 @@
-package genetic_algorithms;
+package genetic_algorithms.crossover;
+
+import genetic_algorithms.Chromosome;
 
 import java.util.ArrayList;
 import java.util.HashSet;

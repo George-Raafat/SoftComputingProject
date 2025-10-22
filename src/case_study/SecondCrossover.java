@@ -1,6 +1,6 @@
 package case_study;
 
-import genetic_algorithms.CrossoverStrategy;
+import genetic_algorithms.crossover.CrossoverStrategy;
 
 import java.util.*;
 

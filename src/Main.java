@@ -3,7 +3,7 @@ import case_study.LectureInfo;
 import case_study.TimeTableChromosome;
 import case_study.TimeTableChromosomeFactory;
 import genetic_algorithms.GeneticAlgorithm;
-import genetic_algorithms.RouletteSelection;
+import genetic_algorithms.selection.RouletteSelection;
 
 import java.util.*;
 

@@ -1,4 +1,6 @@
-package genetic_algorithms;
+package genetic_algorithms.replacement;
+
+import genetic_algorithms.Chromosome;
 
 import java.util.List;
 

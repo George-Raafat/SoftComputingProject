@@ -1,4 +1,6 @@
-package genetic_algorithms;
+package genetic_algorithms.selection;
+
+import genetic_algorithms.Chromosome;
 
 import java.util.List;
 

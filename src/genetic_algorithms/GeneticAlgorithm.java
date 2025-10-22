@@ -1,5 +1,8 @@
 package genetic_algorithms;
 
+import genetic_algorithms.crossover.CrossoverStrategy;
+import genetic_algorithms.selection.SelectionStrategy;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
