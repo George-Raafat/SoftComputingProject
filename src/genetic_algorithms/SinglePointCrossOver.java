@@ -2,15 +2,15 @@ package genetic_algorithms;
 
 import java.util.List;
 
-public class SinglePointCrossOver<T extends Chromosome> implements CrossoverStrategy<T> {
+public class SinglePointCrossOver<ChomoT extends Chromosome<ChomoT, GeneT>, GeneT> implements CrossoverStrategy<ChomoT, GeneT> {
 
     @Override
-    public List<T> crossover(T parent1, T parent2) {
+    public List<ChomoT> crossover(ChomoT parent1, ChomoT parent2) {
         int n = parent1.getGenes().size();
         int crossoverPoint = (int) (Math.random() * n);
 
-        T child1 = (T) parent1.copy();
-        T child2 = (T) parent2.copy();
+        ChomoT child1 = parent1.copy();
+        ChomoT child2 = parent2.copy();
 
         for (int i = crossoverPoint; i < n; i++) {
             var tempGene = child1.getGenes().get(i);

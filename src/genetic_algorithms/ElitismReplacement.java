@@ -1,9 +1,10 @@
 package genetic_algorithms;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class ElitismReplacement implements ReplacementStrategy {
+public class ElitismReplacement<ChomoT extends Chromosome<ChomoT, ?>> implements ReplacementStrategy<ChomoT> {
 
     private final int eliteCount;
 
@@ -12,10 +13,10 @@ public class ElitismReplacement implements ReplacementStrategy {
     }
 
     @Override
-    public List<Chromosome> replace(List<Chromosome> oldPopulation, List<Chromosome> offspring) {
-        oldPopulation.sort((a, b) -> Double.compare(b.getFitness(), a.getFitness()));
+    public List<ChomoT> replace(List<ChomoT> oldPopulation, List<ChomoT> offspring) {
+        oldPopulation.sort(Collections.reverseOrder());
 
-        List<Chromosome> newGeneration = new ArrayList<>();
+        List<ChomoT> newGeneration = new ArrayList<>();
 
         for (int i = 0; i < eliteCount && i < oldPopulation.size(); ++i) {
             newGeneration.add(oldPopulation.get(i));

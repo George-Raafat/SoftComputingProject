@@ -2,14 +2,12 @@ package genetic_algorithms;
 
 import java.util.List;
 
-public interface Chromosome<T> extends Comparable<Chromosome> {
+public interface Chromosome<ChromoT extends Chromosome<ChromoT, GeneT>, GeneT> extends Comparable<Chromosome<ChromoT, GeneT>> {
     void mutate(double mutationRate);
 
-    List<T> getGenes();
+    List<GeneT> getGenes();
 
-    Chromosome copy();
+    ChromoT copy();
 
     Integer getFitness();
-
-    List<Chromosome> crossoverWith(Chromosome partner);
 }

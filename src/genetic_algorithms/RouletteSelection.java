@@ -3,12 +3,11 @@ package genetic_algorithms;
 import java.util.List;
 import java.util.Random;
 
-public class RouletteSelection implements SelectionStrategy {
-
+public class RouletteSelection<ChomoT extends Chromosome<ChomoT, ?>> implements SelectionStrategy<ChomoT> {
     @Override
-    public Chromosome select(List<Chromosome> population) {
+    public ChomoT select(List<ChomoT> population) {
         double totalFitness = 0;
-        for (Chromosome c : population) {
+        for (ChomoT c : population) {
             totalFitness += c.getFitness();
         }
 
@@ -16,7 +15,7 @@ public class RouletteSelection implements SelectionStrategy {
         double randomValue = random.nextDouble() * totalFitness;
 
         double sum = 0;
-        for (Chromosome c : population) {
+        for (ChomoT c : population) {
             sum += c.getFitness();
             if (sum >= randomValue) {
                 return c;

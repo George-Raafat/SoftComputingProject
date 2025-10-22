@@ -1,4 +1,9 @@
-import case_study.*;
+import case_study.FirstCrossover;
+import case_study.LectureInfo;
+import case_study.TimeTableChromosome;
+import case_study.TimeTableChromosomeFactory;
+import genetic_algorithms.GeneticAlgorithm;
+import genetic_algorithms.RouletteSelection;
 
 import java.util.*;
 
@@ -6,17 +11,20 @@ public class Main {
 
     public static void main(String[] args) {
         List<LectureInfo> lecturesInfo = getLectureInfos();
-        CrossoverStrategy crossoverStrategy = new FirstCrossover();
-        TimeTableChromosomeFactory factory = new TimeTableChromosomeFactory(lecturesInfo, crossoverStrategy);
-        TimeTableChromosome chromosome = factory.create();
-        chromosome.printTimeTable();
-        System.out.println("\n==============================\n");
-        chromosome.mutate(0.7);
-        chromosome.printTimeTable();
+        TimeTableChromosomeFactory factory = new TimeTableChromosomeFactory(lecturesInfo);
+        GeneticAlgorithm<TimeTableChromosome, Integer> geneticAlgorithm = new GeneticAlgorithm<>(factory::create, new RouletteSelection<>(), new FirstCrossover());
+        for (int i = 0; i < 3; i++) {
+            geneticAlgorithm.run();
+            TimeTableChromosome firstBest = geneticAlgorithm.getFirstBest();
+            TimeTableChromosome best = geneticAlgorithm.getBestSolution();
+            System.out.println("First Best Fitness: " + firstBest.getFitness());
+            firstBest.printTimeTable();
+            System.out.println("\n===================================\n");
 
-//        System.out.println("\n==============================\n");
-//        chromosome = factory.create();
-//        chromosome.printTimeTable();
+            System.out.println("Best Fitness: " + best.getFitness());
+            best.printTimeTable();
+            System.out.println("\n\n|||||||||||||||||||||||||||||||||||||||||||||||\n\n");
+        }
     }
 
     private static List<LectureInfo> getLectureInfos() {
@@ -25,8 +33,8 @@ public class Main {
         Random random = new Random();
         for (String lecture : lectures) {
             Set<Integer> availableSlots = new HashSet<>();
-            int lecturesPerWeek = random.nextInt(3) + 1;
-            while (availableSlots.size() < 5) {
+            int lecturesPerWeek = 3;
+            while (availableSlots.size() < 10) {
                 availableSlots.add(random.nextInt(36));
             }
             lecturesInfo.add(new LectureInfo(lecture, new ArrayList<>(availableSlots), lecturesPerWeek));

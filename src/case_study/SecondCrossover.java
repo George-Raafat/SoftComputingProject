@@ -1,15 +1,19 @@
 package case_study;
 
-import genetic_algorithms.Chromosome;
+import genetic_algorithms.CrossoverStrategy;
+
 import java.util.*;
 
-public class SecondCrossover implements CrossoverStrategy {
+public class SecondCrossover implements CrossoverStrategy<TimeTableChromosome, Integer> {
 
     @Override
-    public List<Chromosome> crossover(TimeTableChromosome firstParent, TimeTableChromosome secondParent) {
+    public List<TimeTableChromosome> crossover(TimeTableChromosome firstParent, TimeTableChromosome secondParent) {
         TimeTableChromosome child1 = makeChild(firstParent, secondParent);
         TimeTableChromosome child2 = makeChild(secondParent, firstParent);
-        return List.of(child1, child2);
+        List<TimeTableChromosome> children = new ArrayList<>(2);
+        children.add(child1);
+        children.add(child2);
+        return children;
     }
 
     private TimeTableChromosome makeChild(TimeTableChromosome primary, TimeTableChromosome secondary) {
@@ -17,7 +21,7 @@ public class SecondCrossover implements CrossoverStrategy {
         List<Integer> childGenes = new ArrayList<>(primary.getGenes());
         Set<Integer> used = new HashSet<>(childGenes);
 
-        int swaps = (n + 1) >> 1;
+        int swaps = (n + 1) / 2;
         Random rand = new Random();
 
         for (int i = 0; i < swaps; i++) {
@@ -33,7 +37,7 @@ public class SecondCrossover implements CrossoverStrategy {
 
         TimeTableChromosome child = new TimeTableChromosome();
         child.setGenes(childGenes);
-         child.evaluateFitness();
+        child.evaluateFitness();
         return child;
     }
 }

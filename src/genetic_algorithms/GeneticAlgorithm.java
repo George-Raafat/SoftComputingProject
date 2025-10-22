@@ -6,19 +6,23 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
 
-public class GeneticAlgorithm {
+public class GeneticAlgorithm<ChomoT extends Chromosome<ChomoT, GeneT>, GeneT> {
     private final Random random = new Random();
-    private List<Chromosome> population = new ArrayList<>();
+    private List<ChomoT> population = new ArrayList<>();
     private int populationSize = 50;
     private int generations = 100;
     private double crossoverRate = 0.8;
     private double mutationRate = 0.02;
-    private Supplier<Chromosome> chromosomeFactory;
-    private SelectionStrategy selectionStrategy;
+    private Supplier<ChomoT> chromosomeFactory;
+    private SelectionStrategy<ChomoT> selectionStrategy;
+    private CrossoverStrategy<ChomoT, GeneT> crossoverStrategy;
+    private ChomoT firstBest;
+    private ChomoT best;
 
-    public GeneticAlgorithm(Supplier<Chromosome> chromosomeFactory, SelectionStrategy selectionStrategy) {
+    public GeneticAlgorithm(Supplier<ChomoT> chromosomeFactory, SelectionStrategy<ChomoT> selectionStrategy, CrossoverStrategy<ChomoT, GeneT> crossoverStrategy) {
         this.chromosomeFactory = chromosomeFactory;
         this.selectionStrategy = selectionStrategy;
+        this.crossoverStrategy = crossoverStrategy;
     }
 
     public void setPopulationSize(int size) {
@@ -37,32 +41,40 @@ public class GeneticAlgorithm {
         this.mutationRate = rate;
     }
 
-    public void setChromosomeFactory(Supplier<Chromosome> factory) {
+    public void setChromosomeFactory(Supplier<ChomoT> factory) {
         this.chromosomeFactory = factory;
     }
 
-    public void setSelectionStrategy(SelectionStrategy strategy) {
+    public void setSelectionStrategy(SelectionStrategy<ChomoT> strategy) {
         this.selectionStrategy = strategy;
+    }
+
+    public void setCrossoverStrategy(CrossoverStrategy<ChomoT, GeneT> crossoverStrategy) {
+        this.crossoverStrategy = crossoverStrategy;
     }
 
     public void run() {
         initializePopulation();
 
+        firstBest = Collections.max(population);
+        best = firstBest;
+
         for (int g = 0; g < generations; g++) {
-            List<Chromosome> newPopulation = new ArrayList<>();
+            List<ChomoT> newPopulation = new ArrayList<>();
 
             while (newPopulation.size() < populationSize) {
-                Chromosome parent1 = selectionStrategy.select(population);
-                Chromosome parent2 = selectionStrategy.select(population);
+                ChomoT parent1 = selectionStrategy.select(population);
+                ChomoT parent2 = selectionStrategy.select(population);
 
-                List<Chromosome> children;
+                List<ChomoT> children;
                 if (random.nextDouble() < crossoverRate) {
-                    children = parent1.crossoverWith(parent2);
+                    children = crossoverStrategy.crossover(parent1, parent2);
                 } else {
-                    children = List.of(parent1.copy());
+                    children = new ArrayList<>();
+                    children.add(parent1.copy());
                 }
 
-                for (Chromosome child : children) {
+                for (ChomoT child : children) {
                     child.mutate(mutationRate);
                     newPopulation.add(child);
                     if (newPopulation.size() >= populationSize) break;
@@ -70,8 +82,11 @@ public class GeneticAlgorithm {
             }
 
             population = newPopulation;
-            population.sort(Collections.reverseOrder());
-            System.out.println("Generation " + g + " best fitness: " + population.get(0).getFitness());
+            ChomoT currentMax = Collections.max(population);
+            if (currentMax.getFitness() > best.getFitness()) {
+                best = currentMax;
+            }
+//            System.out.println("Generation " + g + " best fitness: " + currentMax.getFitness());
         }
     }
 
@@ -82,7 +97,11 @@ public class GeneticAlgorithm {
         }
     }
 
-    public Chromosome getBestSolution() {
-        return population.get(0);
+    public ChomoT getFirstBest() {
+        return firstBest;
+    }
+
+    public ChomoT getBestSolution() {
+        return best;
     }
 }

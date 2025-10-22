@@ -7,14 +7,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class TimeTableChromosome implements Chromosome<Integer> {
+public class TimeTableChromosome implements Chromosome<TimeTableChromosome, Integer> {
     public static List<LectureInfo> lecturesInfo;
-    public static CrossoverStrategy crossoverStrategy;
     public static List<List<Integer>> availabilityTable;
-    private Integer fitness;
     private List<Integer> genes;
+    private Integer fitness;
 
-    TimeTableChromosome() {}
+    TimeTableChromosome() {
+    }
 
     @Override
     public void mutate(double mutationRate) {
@@ -39,10 +39,10 @@ public class TimeTableChromosome implements Chromosome<Integer> {
     }
 
     @Override
-    public Chromosome copy() {
+    public TimeTableChromosome copy() {
         TimeTableChromosome chromosome = new TimeTableChromosome();
         chromosome.fitness = this.fitness;
-        chromosome.genes = List.copyOf(this.genes);
+        chromosome.genes = new ArrayList<>(genes);
         return chromosome;
     }
 
@@ -54,32 +54,31 @@ public class TimeTableChromosome implements Chromosome<Integer> {
     public void evaluateFitness() {
         boolean[] usedSlots = new boolean[36];
         for (int gene : genes) {
-            usedSlots[gene] = true;
+            try {
+                usedSlots[gene] = true;
+            } catch (Exception e) {
+                throw new RuntimeException("gene: " + gene);
+            }
         }
         int cost = 0;
         int numDays = 0;
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < 6; i++) {
             int j = i * 6;
             int k = j + 5;
-            while(j <= k && !usedSlots[j]){
+            while (j <= k && !usedSlots[j]) {
                 ++j;
             }
-            while(k >= j && !usedSlots[k]){
+            while (k >= j && !usedSlots[k]) {
                 --k;
             }
             int interval = k - j + 1;
-            if (interval > 0){
+            if (interval > 0) {
                 ++numDays;
             }
             cost += interval * interval;
         }
-        cost += numDays * 20;
-        fitness = 340 - cost;
-    }
-
-    @Override
-    public List<Chromosome> crossoverWith(Chromosome partner) {
-        return crossoverStrategy.crossover(this, (TimeTableChromosome) partner);
+        cost += numDays * 12;
+        fitness = 289 - cost;
     }
 
     @Override

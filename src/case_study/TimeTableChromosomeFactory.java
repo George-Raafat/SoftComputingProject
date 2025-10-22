@@ -1,6 +1,9 @@
 package case_study;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class TimeTableChromosomeFactory {
     private final int slotsPerWeek = 36;
@@ -11,7 +14,7 @@ public class TimeTableChromosomeFactory {
     // Track visited slots during DFS
     private boolean[] visited;
 
-    public TimeTableChromosomeFactory(List<LectureInfo> lectures, CrossoverStrategy crossoverStrategy) {
+    public TimeTableChromosomeFactory(List<LectureInfo> lectures) {
         int numLectures = 0;
         for (LectureInfo lecture : lectures) {
             numLectures += lecture.lecturesPerWeek();
@@ -25,7 +28,6 @@ public class TimeTableChromosomeFactory {
         }
         TimeTableChromosome.lecturesInfo = lectures;
         TimeTableChromosome.availabilityTable = availabilityTable;
-        TimeTableChromosome.crossoverStrategy = crossoverStrategy;
     }
 
     private boolean dfs(int prof) {

@@ -1,48 +1,37 @@
 package case_study;
 
-import genetic_algorithms.Chromosome;
+import genetic_algorithms.CrossoverStrategy;
+
 import java.util.*;
 
-public class FirstCrossover implements CrossoverStrategy {
+public class FirstCrossover implements CrossoverStrategy<TimeTableChromosome, Integer> {
 
     @Override
-    public List<Chromosome> crossover(TimeTableChromosome firstParent, TimeTableChromosome secondParent) {
-        int n = firstParent.getGenes().size();
+    public List<TimeTableChromosome> crossover(TimeTableChromosome firstParent, TimeTableChromosome secondParent) {
+        TimeTableChromosome child1 = makeChild(firstParent, secondParent);
+        TimeTableChromosome child2 = makeChild(secondParent, firstParent);
 
-        int len = 1 + (int) (Math.random() * (n - 1));
-        int index = (int) (Math.random() * (n - len + 1));
-
-        TimeTableChromosome child1 = makeChild(firstParent, secondParent, index, len);
-        TimeTableChromosome child2 = makeChild(secondParent, firstParent, index, len);
-
-        return List.of(child1, child2);
+        List<TimeTableChromosome> children = new ArrayList<>(2);
+        children.add(child1);
+        children.add(child2);
+        return children;
     }
 
-    private TimeTableChromosome makeChild(TimeTableChromosome primary, TimeTableChromosome secondary, int index, int len) {
+    private TimeTableChromosome makeChild(TimeTableChromosome primary, TimeTableChromosome secondary) {
         int n = primary.getGenes().size();
+        List<Integer> childGenes = new ArrayList<>(primary.getGenes());
+        Set<Integer> used = new HashSet<>(childGenes);
 
-        List<Integer> childGenes = new ArrayList<>(Collections.nCopies(n, -1));
-        Set<Integer> used = new HashSet<>();
+        Random rand = new Random();
 
-        for (int i = index; i < index + len; ++i) {
-            int g = secondary.getGenes().get(i);
-            childGenes.set(i, g);
-            used.add(g);
-        }
+        for (int i = 0; i < n; i++) {
+            boolean swap = rand.nextBoolean();
+            int newGene = secondary.getGenes().get(i);
 
-        for (int i = 0; i < n; ++i) {
-            if (i >= index && i < index + len) continue;
-
-            int g = primary.getGenes().get(i);
-            if (!used.contains(g)) {
-                childGenes.set(i, g);
-                used.add(g);
-            } else {
-                int alt = secondary.getGenes().get(i);
-                if (!used.contains(alt)) {
-                    childGenes.set(i, alt);
-                    used.add(alt);
-                }
+            if (!used.contains(newGene) && swap) {
+                used.remove(childGenes.get(i));
+                used.add(newGene);
+                childGenes.set(i, newGene);
             }
         }
 
