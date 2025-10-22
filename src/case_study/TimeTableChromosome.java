@@ -87,6 +87,7 @@ public class TimeTableChromosome implements Chromosome {
         return fitness - c.getFitness();
     }
 
+    @Override
     public List<Integer> getGenes() {
         return genes;
     }
