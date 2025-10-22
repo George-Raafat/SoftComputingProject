@@ -2,10 +2,10 @@ package genetic_algorithms;
 
 import java.util.List;
 
-public interface Chromosome extends Comparable<Chromosome> {
+public interface Chromosome<T> extends Comparable<Chromosome> {
     void mutate(double mutationRate);
 
-    List<Integer> getGenes();
+    List<T> getGenes();
 
     Chromosome copy();
 

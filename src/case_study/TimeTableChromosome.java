@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class TimeTableChromosome implements Chromosome {
+public class TimeTableChromosome implements Chromosome<Integer> {
     public static List<LectureInfo> lecturesInfo;
     public static CrossoverStrategy crossoverStrategy;
     public static List<List<Integer>> availabilityTable;
