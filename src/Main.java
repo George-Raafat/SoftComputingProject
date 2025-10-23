@@ -3,7 +3,7 @@ import case_study.LectureInfo;
 import case_study.TimeTableChromosome;
 import case_study.TimeTableChromosomeFactory;
 import genetic_algorithms.GeneticAlgorithm;
-import genetic_algorithms.replacement.SteadyStateReplacement;
+import genetic_algorithms.replacement.GenerationalReplacement;
 import genetic_algorithms.selection.RouletteSelection;
 
 import java.util.*;
@@ -17,7 +17,7 @@ public class Main {
                 factory::create,
                 new RouletteSelection<>(),
                 new FirstCrossover(),
-                new SteadyStateReplacement<>()
+                new GenerationalReplacement<>()
         );
         for (int i = 0; i < 3; i++) {
             geneticAlgorithm.run();
