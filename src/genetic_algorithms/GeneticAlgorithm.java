@@ -21,8 +21,8 @@ public class GeneticAlgorithm<ChomoT extends Chromosome<ChomoT, GeneT>, GeneT> {
     private SelectionStrategy<ChomoT> selectionStrategy;
     private CrossoverStrategy<ChomoT, GeneT> crossoverStrategy;
     private ReplacementStrategy<ChomoT> replacementStrategy;
-    private ChomoT firstBest;
-    private ChomoT best;
+    private ChomoT firstBest = null;
+    private ChomoT best = null;
 
     public GeneticAlgorithm(
             Supplier<ChomoT> chromosomeFactory,

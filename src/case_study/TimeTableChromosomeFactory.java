@@ -52,7 +52,7 @@ public class TimeTableChromosomeFactory {
         for (int i = 0; i < availabilityTable.size(); ++i) {
             visited = new boolean[slotsPerWeek];
             if (!dfs(i)) {
-                return null; // No feasible assignment
+                throw new RuntimeException("There is no valid solution for this problem");
             }
         }
 
@@ -68,9 +68,6 @@ public class TimeTableChromosomeFactory {
 
     public TimeTableChromosome create() {
         List<Integer> genes = assignSlots();
-        if (genes == null) {
-            return null;
-        }
         TimeTableChromosome chromosome = new TimeTableChromosome();
         chromosome.setGenes(genes);
         chromosome.evaluateFitness();
