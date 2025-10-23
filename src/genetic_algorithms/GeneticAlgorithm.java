@@ -1,6 +1,7 @@
 package genetic_algorithms;
 
 import genetic_algorithms.crossover.CrossoverStrategy;
+import genetic_algorithms.replacement.ReplacementStrategy;
 import genetic_algorithms.selection.SelectionStrategy;
 
 import java.util.ArrayList;
@@ -19,13 +20,20 @@ public class GeneticAlgorithm<ChomoT extends Chromosome<ChomoT, GeneT>, GeneT> {
     private Supplier<ChomoT> chromosomeFactory;
     private SelectionStrategy<ChomoT> selectionStrategy;
     private CrossoverStrategy<ChomoT, GeneT> crossoverStrategy;
+    private ReplacementStrategy<ChomoT> replacementStrategy;
     private ChomoT firstBest;
     private ChomoT best;
 
-    public GeneticAlgorithm(Supplier<ChomoT> chromosomeFactory, SelectionStrategy<ChomoT> selectionStrategy, CrossoverStrategy<ChomoT, GeneT> crossoverStrategy) {
+    public GeneticAlgorithm(
+            Supplier<ChomoT> chromosomeFactory,
+            SelectionStrategy<ChomoT> selectionStrategy,
+            CrossoverStrategy<ChomoT, GeneT> crossoverStrategy,
+            ReplacementStrategy<ChomoT> replacementStrategy
+    ) {
         this.chromosomeFactory = chromosomeFactory;
         this.selectionStrategy = selectionStrategy;
         this.crossoverStrategy = crossoverStrategy;
+        this.replacementStrategy = replacementStrategy;
     }
 
     public void setPopulationSize(int size) {
@@ -56,6 +64,10 @@ public class GeneticAlgorithm<ChomoT extends Chromosome<ChomoT, GeneT>, GeneT> {
         this.crossoverStrategy = crossoverStrategy;
     }
 
+    public void setReplacementStrategy(ReplacementStrategy<ChomoT> replacementStrategy) {
+        this.replacementStrategy = replacementStrategy;
+    }
+
     public void run() {
         initializePopulation();
 
@@ -63,9 +75,9 @@ public class GeneticAlgorithm<ChomoT extends Chromosome<ChomoT, GeneT>, GeneT> {
         best = firstBest;
 
         for (int g = 0; g < generations; g++) {
-            List<ChomoT> newPopulation = new ArrayList<>();
+            List<ChomoT> offspring = new ArrayList<>();
 
-            while (newPopulation.size() < populationSize) {
+            while (offspring.size() < populationSize) {
                 ChomoT parent1 = selectionStrategy.select(population);
                 ChomoT parent2 = selectionStrategy.select(population);
 
@@ -75,16 +87,17 @@ public class GeneticAlgorithm<ChomoT extends Chromosome<ChomoT, GeneT>, GeneT> {
                 } else {
                     children = new ArrayList<>();
                     children.add(parent1.copy());
+                    children.add(parent2.copy());
                 }
 
                 for (ChomoT child : children) {
                     child.mutate(mutationRate);
-                    newPopulation.add(child);
-                    if (newPopulation.size() >= populationSize) break;
+                    offspring.add(child);
+                    if (offspring.size() >= populationSize) break;
                 }
             }
 
-            population = newPopulation;
+            population = replacementStrategy.replace(population, offspring);
             ChomoT currentMax = Collections.max(population);
             if (currentMax.getFitness() > best.getFitness()) {
                 best = currentMax;

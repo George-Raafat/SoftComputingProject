@@ -9,7 +9,7 @@ import java.util.List;
 public class SteadyStateReplacement<ChomoT extends Chromosome<ChomoT, ?>> implements ReplacementStrategy<ChomoT> {
 
     public SteadyStateReplacement() {}
-    
+
     @Override
     public List<ChomoT> replace(List<ChomoT> oldPopulation, List<ChomoT> offspring) {
 
