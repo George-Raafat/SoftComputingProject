@@ -5,3 +5,5 @@ public interface FuzzyOperator {
     double or(double a, double b);
     double not(double a);
 }
+
+// we need to add more operators

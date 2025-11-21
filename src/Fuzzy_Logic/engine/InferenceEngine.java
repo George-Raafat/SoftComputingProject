@@ -1,5 +1,6 @@
 package Fuzzy_Logic.engine;
 
+import Fuzzy_Logic.strategies.defuzzification.DefuzzificationStrategy;
 import Fuzzy_Logic.strategies.operators.FuzzyOperator;
 
 public abstract class InferenceEngine {
