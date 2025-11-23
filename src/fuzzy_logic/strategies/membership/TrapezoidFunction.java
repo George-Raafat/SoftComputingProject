@@ -5,17 +5,15 @@ public class TrapezoidFunction implements MembershipFunction {
     private final double b; // Left shoulder
     private final double c; // Right shoulder
     private final double d; // Right foot
-    private final String name;
 
-    public TrapezoidFunction(double a, double b, double c, double d, String name) {
-        if (a >= b || b >= c || c >= d) {
-            throw new IllegalArgumentException("Invalid trapezoid function parameters: a < b < c < d must hold.");
+    public TrapezoidFunction(double a, double b, double c, double d) {
+        if (a > b || b >= c || c > d) {
+            throw new IllegalArgumentException("Invalid trapezoid function parameters: a <= b < c <= d must hold.");
         }
         this.a = a;
         this.b = b;
         this.c = c;
         this.d = d;
-        this.name = name;
     }
 
     @Override
@@ -29,10 +27,5 @@ public class TrapezoidFunction implements MembershipFunction {
         } else { // input > c && input <= d
             return (d - input) / (d - c);
         }
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 }

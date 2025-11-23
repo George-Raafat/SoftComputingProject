@@ -4,16 +4,14 @@ public class TriangularFunction implements MembershipFunction {
     private final double a; // Left vertex
     private final double b; // Peak vertex
     private final double c; // Right vertex
-    private final String name;
 
-    public TriangularFunction(double a, double b, double c, String name) {
-        if (a >= b || b >= c) {
-            throw new IllegalArgumentException("Invalid triangular function parameters: a < b < c must hold.");
+    public TriangularFunction(double a, double b, double c) {
+        if (a > b || b > c || a == c) {
+            throw new IllegalArgumentException("Invalid triangular function parameters: a <= b, b <= c, a < c must hold.");
         }
         this.a = a;
         this.b = b;
         this.c = c;
-        this.name = name;
     }
 
     @Override
@@ -27,10 +25,5 @@ public class TriangularFunction implements MembershipFunction {
         } else { // input > b
             return (c - input) / (c - b);
         }
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 }
