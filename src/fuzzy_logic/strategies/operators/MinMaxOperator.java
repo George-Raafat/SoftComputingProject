@@ -1,4 +1,4 @@
-package Fuzzy_Logic.strategies.operators;
+package fuzzy_logic.strategies.operators;
 
 public class MinMaxOperator implements FuzzyOperator {
     @Override

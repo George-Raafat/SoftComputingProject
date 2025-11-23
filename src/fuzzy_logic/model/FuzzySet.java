@@ -1,6 +1,6 @@
-package Fuzzy_Logic.model;
+package fuzzy_logic.model;
 
-import Fuzzy_Logic.strategies.membership.MembershipFunction;
+import fuzzy_logic.strategies.membership.MembershipFunction;
 
 public class FuzzySet {
     private final String name;

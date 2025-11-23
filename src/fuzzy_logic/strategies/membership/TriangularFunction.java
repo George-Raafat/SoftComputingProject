@@ -1,4 +1,4 @@
-package Fuzzy_Logic.strategies.membership;
+package fuzzy_logic.strategies.membership;
 
 public class TriangularFunction implements MembershipFunction {
     private final double a; // Left vertex

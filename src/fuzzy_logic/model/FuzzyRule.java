@@ -1,6 +1,6 @@
-package Fuzzy_Logic.model;
+package fuzzy_logic.model;
 
-import Fuzzy_Logic.strategies.operators.FuzzyOperator;
+import fuzzy_logic.strategies.operators.FuzzyOperator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,7 @@ public class FuzzyRule {
 
     /**
      * Calculates how strongly this rule applies.
+     *
      * @param operator The strategy for AND logic (e.g., Min or Product)
      * @return A value 0.0 - 1.0
      */

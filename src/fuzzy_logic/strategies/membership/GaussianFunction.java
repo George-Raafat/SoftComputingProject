@@ -1,4 +1,4 @@
-package Fuzzy_Logic.strategies.membership;
+package fuzzy_logic.strategies.membership;
 
 public class GaussianFunction implements MembershipFunction {
     private final double mean; // Mean (center) of the Gaussian

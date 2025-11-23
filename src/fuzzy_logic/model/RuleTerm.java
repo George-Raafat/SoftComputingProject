@@ -1,4 +1,4 @@
-package Fuzzy_Logic.model;
+package fuzzy_logic.model;
 
 public class RuleTerm {
     private final LinguisticVariable variable;

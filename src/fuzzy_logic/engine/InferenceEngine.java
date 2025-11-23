@@ -1,7 +1,7 @@
-package Fuzzy_Logic.engine;
+package fuzzy_logic.engine;
 
-import Fuzzy_Logic.strategies.defuzzification.DefuzzificationStrategy;
-import Fuzzy_Logic.strategies.operators.FuzzyOperator;
+import fuzzy_logic.strategies.defuzzification.DefuzzificationStrategy;
+import fuzzy_logic.strategies.operators.FuzzyOperator;
 
 public abstract class InferenceEngine {
     protected RuleBase ruleBase;
