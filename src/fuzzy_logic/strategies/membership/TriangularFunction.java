@@ -1,5 +1,7 @@
 package fuzzy_logic.strategies.membership;
 
+import java.util.List;
+
 public class TriangularFunction implements MembershipFunction {
     private final double a; // Left vertex
     private final double b; // Peak vertex
@@ -7,7 +9,8 @@ public class TriangularFunction implements MembershipFunction {
 
     public TriangularFunction(double a, double b, double c) {
         if (a > b || b > c || a == c) {
-            throw new IllegalArgumentException("Invalid triangular function parameters: a <= b, b <= c, a < c must hold.");
+            throw new IllegalArgumentException("Invalid triangular function parameters: a <= b, b <= c, a < c must " +
+                    "hold.");
         }
         this.a = a;
         this.b = b;
@@ -25,5 +28,10 @@ public class TriangularFunction implements MembershipFunction {
         } else { // input > b
             return (c - input) / (c - b);
         }
+    }
+
+    @Override
+    public List<Double> getPoints() {
+        return List.of(a, b, c);
     }
 }

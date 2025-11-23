@@ -1,50 +1,39 @@
 package fuzzy_logic.model;
 
-import fuzzy_logic.strategies.operators.FuzzyOperator;
-
-import java.util.ArrayList;
-import java.util.List;
+import fuzzy_logic.antecedents.Antecedent;
 
 public class FuzzyRule {
-    private final List<RuleTerm> antecedents;
-    private final RuleTerm consequent; // For Mamdani, consequent is also a Set
+    private final Antecedent antecedent;
+    private final RuleConsequent consequent;
+    private boolean enabled = true;
+    private double weight = 1.0;
 
-    public FuzzyRule(RuleTerm consequent) {
-        this.antecedents = new ArrayList<>();
+    public FuzzyRule(Antecedent antecedent, RuleConsequent consequent) {
+        this.antecedent = antecedent;
         this.consequent = consequent;
     }
 
-    public void addAntecedent(RuleTerm term) {
-        this.antecedents.add(term);
+    public Antecedent getAntecedent() {
+        return antecedent;
     }
 
-    /**
-     * Calculates how strongly this rule applies.
-     *
-     * @param operator The strategy for AND logic (e.g., Min or Product)
-     * @return A value 0.0 - 1.0
-     */
-    public double getFiringStrength(FuzzyOperator operator) {
-        double strength = 1.0;
-
-        for (RuleTerm term : antecedents) {
-            if (strength == 1.0) {
-                // First iteration
-                strength = term.getMembership();
-            } else {
-                // Combine with previous using AND strategy
-                strength = operator.and(strength, term.getMembership());
-            }
-        }
-        return strength;
-    }
-
-    public RuleTerm getConsequent() {
+    public RuleConsequent getConsequent() {
         return consequent;
     }
 
-    @Override
-    public String toString() {
-        return "IF " + antecedents + " THEN " + consequent;
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double w) {
+        this.weight = Math.max(0.0, Math.min(1.0, w));
     }
 }

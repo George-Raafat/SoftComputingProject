@@ -1,51 +1,28 @@
 package fuzzy_logic.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import fuzzy_logic.strategies.membership.MembershipFunction;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LinguisticVariable {
-    private final String name;
     private final double minRange;
     private final double maxRange;
-    private final List<FuzzySet> fuzzySets;
-    private double crispValue;
+    private final Map<String, MembershipFunction> fuzzySets = new HashMap<>();
 
-    public LinguisticVariable(String name, double minRange, double maxRange) {
-        this.name = name;
+    public LinguisticVariable(double minRange, double maxRange) {
         this.minRange = minRange;
         this.maxRange = maxRange;
-        this.fuzzySets = new ArrayList<>();
     }
 
-    public void addFuzzySet(FuzzySet fuzzySet) {
-        fuzzySets.add(fuzzySet);
+    public void addFuzzySet(String name, MembershipFunction mf) {
+        fuzzySets.put(name, mf);
     }
 
-    public double getValue() {
-        return this.crispValue;
-    }
+    public double getMembershipDegree(String setName, double value) {
+        MembershipFunction set = getFuzzySet(setName);
 
-    public void setValue(double val) {
-        if (val < minRange) val = minRange;
-        if (val > maxRange) val = maxRange;
-        this.crispValue = val;
-    }
-
-    public double getMembershipDegree(String fuzzySetName) {
-        Optional<FuzzySet> set = fuzzySets.stream()
-                .filter(fs -> fs.getName().equals(fuzzySetName))
-                .findFirst();
-
-        if (set.isPresent()) {
-            return set.get().getMembershipDegree(this.crispValue);
-        } else {
-            throw new IllegalArgumentException("Fuzzy set not found: " + fuzzySetName);
-        }
-    }
-
-    public String getName() {
-        return name;
+        return set.calculateMembership(value);
     }
 
     public double getMinRange() {
@@ -56,15 +33,16 @@ public class LinguisticVariable {
         return maxRange;
     }
 
-    public List<FuzzySet> getFuzzySets() {
+    public Map<String, MembershipFunction> getFuzzySets() {
         return fuzzySets;
     }
 
-    public double getCrispValue() {
-        return crispValue;
-    }
+    public MembershipFunction getFuzzySet(String setName) {
+        MembershipFunction set = fuzzySets.get(setName);
 
-    public void setCrispValue(double crispValue) {
-        this.crispValue = crispValue;
+        if (set == null) {
+            throw new IllegalArgumentException("Unknown set " + setName);
+        }
+        return set;
     }
 }

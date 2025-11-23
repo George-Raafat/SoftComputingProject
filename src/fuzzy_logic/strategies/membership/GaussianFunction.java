@@ -1,5 +1,7 @@
 package fuzzy_logic.strategies.membership;
 
+import java.util.List;
+
 public class GaussianFunction implements MembershipFunction {
     private final double mean; // Mean (center) of the Gaussian
     private final double stdDev; // Standard deviation (width) of the Gaussian
@@ -15,5 +17,10 @@ public class GaussianFunction implements MembershipFunction {
     @Override
     public double calculateMembership(double input) {
         return Math.exp(-0.5 * Math.pow((input - mean) / stdDev, 2));
+    }
+
+    @Override
+    public List<Double> getPoints() {
+        return List.of(0.0);
     }
 }

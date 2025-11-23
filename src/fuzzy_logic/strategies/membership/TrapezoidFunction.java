@@ -1,5 +1,7 @@
 package fuzzy_logic.strategies.membership;
 
+import java.util.List;
+
 public class TrapezoidFunction implements MembershipFunction {
     private final double a; // Left foot
     private final double b; // Left shoulder
@@ -27,5 +29,10 @@ public class TrapezoidFunction implements MembershipFunction {
         } else { // input > c && input <= d
             return (d - input) / (d - c);
         }
+    }
+
+    @Override
+    public List<Double> getPoints() {
+        return List.of(a, b, c, d);
     }
 }
