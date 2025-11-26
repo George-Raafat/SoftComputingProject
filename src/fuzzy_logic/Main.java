@@ -1,6 +1,9 @@
 package fuzzy_logic;
 
 import fuzzy_logic.api.FuzzySolver;
+import fuzzy_logic.strategies.defuzzification.CentroidDefuzzifier;
+import fuzzy_logic.strategies.defuzzification.Defuzzifier;
+import fuzzy_logic.strategies.defuzzification.MeanOfMaxMethod;
 import fuzzy_logic.strategies.membership.TriangularFunction;
 
 import java.util.Map;
@@ -9,7 +12,8 @@ public class Main {
     public static void main(String[] args) {
 
         FuzzySolver solver = new FuzzySolver();
-
+        Defuzzifier d = new CentroidDefuzzifier();
+        solver.setDefuzzifier(d);
         solver.addVariable("Size", 0, 10);
         solver.addSet("Size", "S", new TriangularFunction(0, 0, 100));
         solver.addSet("Size", "L", new TriangularFunction(0, 100, 100));
