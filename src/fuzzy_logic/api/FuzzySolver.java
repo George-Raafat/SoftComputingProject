@@ -2,6 +2,8 @@ package fuzzy_logic.api;
 
 import fuzzy_logic.antecedents.Antecedent;
 import fuzzy_logic.model.*;
+import fuzzy_logic.strategies.defuzzification.CentroidDefuzzifier;
+import fuzzy_logic.strategies.defuzzification.Defuzzifier;
 import fuzzy_logic.strategies.membership.MembershipFunction;
 import fuzzy_logic.strategies.operators.FuzzyOperator;
 import fuzzy_logic.strategies.operators.MinMaxOperator;
@@ -20,6 +22,8 @@ public class FuzzySolver {
     private final RuleParser parser = new RuleParser(registry);
     private FuzzyOperator operator = new MinMaxOperator();
     private LinguisticVariable outputVariable = null;
+    private Defuzzifier defuzzifier = new CentroidDefuzzifier();
+
 
     public FuzzySolver() {
         registry.clear();
@@ -64,6 +68,10 @@ public class FuzzySolver {
         rules.get(index).setEnabled(false);
     }
 
+    public void setDefuzzifier(Defuzzifier d) {
+        this.defuzzifier = d;
+    }
+
     public void setRuleWeight(int index, double w) {
         rules.get(index).setWeight(w);
     }
@@ -94,32 +102,21 @@ public class FuzzySolver {
     // ---------------------------------------------------------
     public double evaluate(Map<String, Double> inputs) {
 
-        Map<String, List<Double>> vals = new HashMap<>();
-        double numerator = 0.0;
-        double denominator = 0.0;
-
+        Map<String, List<Double>> activations = new HashMap<>();
 
         for (FuzzyRule rule : rules) {
             if (!rule.isEnabled()) continue;
-            double antecedentDegree = rule.getAntecedent().evaluate(operator, inputs);
-            double activation = antecedentDegree * rule.getWeight();
 
-            String cons = rule.getConsequent().set();
+            double degree = rule.getAntecedent().evaluate(operator, inputs);
+            double activation = degree * rule.getWeight();
 
-            vals.putIfAbsent(cons, new ArrayList<>());
-            vals.get(cons).add(activation);
-            denominator += activation;
+            String setName = rule.getConsequent().set();
+
+            activations.putIfAbsent(setName, new ArrayList<>());
+            activations.get(setName).add(activation);
         }
-        for (Map.Entry<String, MembershipFunction> entry : outputVariable.getFuzzySets().entrySet()) {
-            List<Double> points = entry.getValue().getPoints();
-            double centroid = points.stream()
-                    .mapToDouble(Double::doubleValue)
-                    .average()
-                    .orElse(0);
-            for (Double val : vals.get(entry.getKey())) {
-                numerator += val * centroid;
-            }
-        }
-        return numerator / denominator;
+
+        return defuzzifier.defuzzify(outputVariable, activations);
     }
+
 }
