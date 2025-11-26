@@ -22,7 +22,7 @@ public class FuzzySolver {
     private final RuleParser parser = new RuleParser(registry);
     private FuzzyOperator operator = new MinMaxOperator();
     private LinguisticVariable outputVariable = null;
-    private Defuzzifier defuzzifier = new CentroidDefuzzifier();
+    private Defuzzifier defuzzifier;
 
 
     public FuzzySolver() {
