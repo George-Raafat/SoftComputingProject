@@ -1,33 +1,23 @@
 package fuzzy_logic.api;
 
-import fuzzy_logic.antecedents.Antecedent;
-import fuzzy_logic.model.*;
-import fuzzy_logic.strategies.defuzzification.CentroidDefuzzifier;
-import fuzzy_logic.strategies.defuzzification.Defuzzifier;
+import fuzzy_logic.model.FuzzyRegistry;
+import fuzzy_logic.model.FuzzyRule;
+import fuzzy_logic.model.LinguisticVariable;
+import fuzzy_logic.model.RuleParser;
 import fuzzy_logic.strategies.membership.MembershipFunction;
 import fuzzy_logic.strategies.operators.FuzzyOperator;
 import fuzzy_logic.strategies.operators.MinMaxOperator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FuzzySolver {
+public abstract class FuzzySolver {
 
-    private final List<FuzzyRule> rules = new ArrayList<>();
-    //    private InferenceEngine engine = new MamdaniEngine(operator);
-//    private Defuzzifier defuzzifier = new CentroidDefuzzifier();
-    private final FuzzyRegistry registry = new FuzzyRegistry();
-    private final RuleParser parser = new RuleParser(registry);
-    private FuzzyOperator operator = new MinMaxOperator();
-    private LinguisticVariable outputVariable = null;
-    private Defuzzifier defuzzifier;
-
-
-    public FuzzySolver() {
-        registry.clear();
-    }
+    protected final List<FuzzyRule> rules = new ArrayList<>();
+    protected final FuzzyRegistry registry = new FuzzyRegistry();
+    protected final RuleParser parser = new RuleParser(registry);
+    protected FuzzyOperator operator = new MinMaxOperator();
 
     // ---------------------------------------------------------
     // VARIABLE SETUP (public, simple)
@@ -45,20 +35,6 @@ public class FuzzySolver {
         variable.addFuzzySet(setName, mf);
     }
 
-    public void setOutputVariable(String name) {
-        LinguisticVariable variable = registry.getVariable(name);
-        if (variable == null)
-            throw new RuntimeException("Variable not found: " + name);
-        this.outputVariable = variable;
-    }
-
-    public void createRule(String antecedent, String consequent) {
-        Antecedent ant = parser.parseAntecedent(antecedent);
-        RuleConsequent con = parser.parseConsequent(consequent);
-        FuzzyRule rule = new FuzzyRule(ant, con);
-        rules.add(rule);
-    }
-
     // Rule editing
     public void enableRule(int index) {
         rules.get(index).setEnabled(true);
@@ -66,10 +42,6 @@ public class FuzzySolver {
 
     public void disableRule(int index) {
         rules.get(index).setEnabled(false);
-    }
-
-    public void setDefuzzifier(Defuzzifier d) {
-        this.defuzzifier = d;
     }
 
     public void setRuleWeight(int index, double w) {
@@ -91,32 +63,8 @@ public class FuzzySolver {
         this.operator = operator;
     }
 
-//    public void setEngine(InferenceEngine engine){
-//        this.engine = engine;
-//    }
-//
-//    public void setDefuzzifier(Defuzzifier defuzzifier) { this.defuzzifier = defuzzifier; }
-
     // ---------------------------------------------------------
     // EVALUATION
     // ---------------------------------------------------------
-    public double evaluate(Map<String, Double> inputs) {
-
-        Map<String, List<Double>> activations = new HashMap<>();
-
-        for (FuzzyRule rule : rules) {
-            if (!rule.isEnabled()) continue;
-
-            double degree = rule.getAntecedent().evaluate(operator, inputs);
-            double activation = degree * rule.getWeight();
-
-            String setName = rule.getConsequent().set();
-
-            activations.putIfAbsent(setName, new ArrayList<>());
-            activations.get(setName).add(activation);
-        }
-
-        return defuzzifier.defuzzify(outputVariable, activations);
-    }
-
+    public abstract double evaluate(Map<String, Double> inputs);
 }

@@ -1,7 +1,6 @@
 package fuzzy_logic.strategies.defuzzification;
 
 import fuzzy_logic.model.LinguisticVariable;
-import fuzzy_logic.strategies.membership.MembershipFunction;
 
 import java.util.List;
 import java.util.Map;

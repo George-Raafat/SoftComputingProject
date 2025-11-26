@@ -3,10 +3,11 @@ package fuzzy_logic.strategies.defuzzification;
 import fuzzy_logic.model.LinguisticVariable;
 import fuzzy_logic.strategies.membership.MembershipFunction;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class CentroidDefuzzifier implements Defuzzifier {
+public class WeightedAverageDefuzzifier implements Defuzzifier {
 
     @Override
     public double defuzzify(LinguisticVariable outputVariable, Map<String, List<Double>> activations) {
@@ -22,12 +23,9 @@ public class CentroidDefuzzifier implements Defuzzifier {
             if (muList == null || muList.isEmpty()) continue;
 
             double centroid = computeCentroid(mf);
-            double sum = 0.0;
-            for (double mu : muList) {
-                sum += mu;
-            }
-            numerator += sum * centroid;
-            denominator += sum;
+            double localMax = Collections.max(muList);
+            numerator += localMax * centroid;
+            denominator += localMax;
         }
 
         if (denominator == 0) return 0.0;
@@ -39,9 +37,8 @@ public class CentroidDefuzzifier implements Defuzzifier {
 
         if (p.size() == 3) {
             return (p.get(0) + p.get(1) + p.get(2)) / 3.0;
-        }
-        else if (p.size() == 4) {
-            return (p.get(0) + 2*(p.get(1) + p.get(2)) + p.get(3)) / 6.0;
+        } else if (p.size() == 4) {
+            return (p.get(0) + p.get(1) + p.get(2) + p.get(3)) / 4.0;
         }
 
         throw new IllegalArgumentException("Unsupported membership_function");

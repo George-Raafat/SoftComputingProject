@@ -3,12 +3,14 @@ package fuzzy_logic.model;
 import fuzzy_logic.antecedents.Antecedent;
 
 public class FuzzyRule {
+    private final String text;
     private final Antecedent antecedent;
     private final RuleConsequent consequent;
     private boolean enabled = true;
     private double weight = 1.0;
 
-    public FuzzyRule(Antecedent antecedent, RuleConsequent consequent) {
+    public FuzzyRule(String text, Antecedent antecedent, RuleConsequent consequent) {
+        this.text = text;
         this.antecedent = antecedent;
         this.consequent = consequent;
     }
@@ -35,5 +37,9 @@ public class FuzzyRule {
 
     public void setWeight(double w) {
         this.weight = Math.max(0.0, Math.min(1.0, w));
+    }
+
+    public String getText() {
+        return text;
     }
 }
