@@ -66,5 +66,19 @@ public abstract class FuzzySolver {
     // ---------------------------------------------------------
     // EVALUATION
     // ---------------------------------------------------------
+    protected void validate(Map<String, Double> inputs) {
+        for (Map.Entry<String, Double> entry : inputs.entrySet()) {
+            String varName = entry.getKey();
+            Double value = entry.getValue();
+            LinguisticVariable variable = registry.getVariable(varName);
+            if (variable == null)
+                throw new RuntimeException("Input variable not found: " + varName);
+            if (value < variable.getMinRange() || value > variable.getMaxRange()) {
+                throw new IllegalArgumentException("Input value " + value + " for variable " + varName +
+                        " is out of range [" + variable.getMinRange() + ", " + variable.getMaxRange() + "]");
+            }
+        }
+    }
+
     public abstract double evaluate(Map<String, Double> inputs);
 }

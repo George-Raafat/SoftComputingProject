@@ -5,6 +5,7 @@ import fuzzy_logic.model.FuzzyRule;
 import fuzzy_logic.model.LinguisticVariable;
 import fuzzy_logic.model.RuleConsequent;
 import fuzzy_logic.strategies.defuzzification.Defuzzifier;
+import fuzzy_logic.strategies.defuzzification.WeightedAverageDefuzzifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ import java.util.Map;
 public class MamdaniSolver extends FuzzySolver {
 
     private LinguisticVariable outputVariable = null;
-    private Defuzzifier defuzzifier;
+    private Defuzzifier defuzzifier = new WeightedAverageDefuzzifier();
 
 
     public MamdaniSolver() {
@@ -44,6 +45,8 @@ public class MamdaniSolver extends FuzzySolver {
     // ---------------------------------------------------------
     public double evaluate(Map<String, Double> inputs) {
 
+        validate(inputs);
+
         Map<String, List<Double>> activations = new HashMap<>();
 
         int ruleIndex = -1;
@@ -53,10 +56,9 @@ public class MamdaniSolver extends FuzzySolver {
 
             double degree = rule.getAntecedent().evaluate(operator, inputs);
             double activation = degree * rule.getWeight();
-
-            System.out.println("Rule" + ruleIndex + ": " + rule.getText() + " | Degree: " + degree + " | Weight: " + rule.getWeight() + " | Activation: " + activation);
-
             String setName = rule.getConsequent().set();
+
+            System.out.println("Rule" + ruleIndex + ": " + rule.getText() + " | Degree: " + degree + " | Weight: " + rule.getWeight() + " | Activation: " + activation + " -> " + setName);
 
             activations.putIfAbsent(setName, new ArrayList<>());
             activations.get(setName).add(activation);

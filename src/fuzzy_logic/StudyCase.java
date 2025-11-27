@@ -39,12 +39,12 @@ public class StudyCase {
         solver.createRule("SoilMoisture=Normal AND Temperature=High AND RainForecast=Medium", "IrrigationTime=Medium");
         solver.createRule("SoilMoisture=Normal AND Temperature=Low AND RainForecast=High", "IrrigationTime=Short");
         solver.createRule("SoilMoisture=Wet AND Temperature=Medium AND RainForecast=Low", "IrrigationTime=Short");
-        solver.createRule("SoilMoisture=Wet OR RainForecast=High", "IrrigationTime=Short");
+        solver.createRule("SoilMoisture=Wet OR NOT RainForecast=Low", "IrrigationTime=Short");
 
         solver.disableRule(3);
-        solver.setRuleWeight(0, 0.75);
+        solver.setRuleWeight(5, 0.75);
 
-        Double val = solver.evaluate(Map.of("SoilMoisture", 100.0, "Temperature", 50.0, "RainForecast", 100.0));
+        Double val = solver.evaluate(Map.of("SoilMoisture", 75.0, "Temperature", 40.0, "RainForecast", 30.0));
         System.out.println(val + " minutes of irrigation needed.");
     }
 }

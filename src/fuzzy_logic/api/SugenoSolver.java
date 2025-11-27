@@ -25,6 +25,8 @@ public class SugenoSolver extends FuzzySolver {
     // ---------------------------------------------------------
     public double evaluate(Map<String, Double> inputs) {
 
+        validate(inputs);
+
         double numerator = 0.0;
         double denominator = 0.0;
 
